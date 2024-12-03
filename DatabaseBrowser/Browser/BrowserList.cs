@@ -4,12 +4,21 @@ public class BrowserList
 {
 
     private readonly BrowserRunnable[] _runnables;
+    private readonly bool _counter;
     private readonly string _prefix;
     
     public BrowserList(String prefix, params BrowserRunnable[] runnables)
     {
         _prefix = prefix;
         _runnables = runnables;
+        _counter = false;
+    }
+
+    public BrowserList(bool counter, String prefix, params BrowserRunnable[] runnables)
+    {
+        _prefix = prefix;
+        _runnables = runnables;
+        _counter = counter;
     }
 
     public void Display()
@@ -29,7 +38,8 @@ public class BrowserList
                     Console.ForegroundColor = ConsoleColor.Black;
                     Console.BackgroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine((i++ + 1) + ". " + runnable.Text);
+                Console.WriteLine((_counter ? (i + 1) + ". " : " ") + runnable.Text);
+                i++;
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.BackgroundColor = ConsoleColor.Black;
             }

@@ -1,4 +1,5 @@
 using DatabaseManager.Data.Entities;
+using DatabaseManager.Variables;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseManager.Data;

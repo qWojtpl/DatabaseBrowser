@@ -1,8 +1,8 @@
-namespace DatabaseManager;
+namespace DatabaseManager.Variables;
 
 public static class Globals
 {
 
-    public static string ConnectionString => @"Database=Hotelix;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=false;";
+    public static string ConnectionString => @"Database=DB;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=false;";
 
 }
