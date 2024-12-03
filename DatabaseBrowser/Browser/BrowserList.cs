@@ -48,13 +48,15 @@ public class BrowserList
             {
                 _runnables[option].Action.Invoke();
                 break;
-            } else if (key.Equals(ConsoleKey.DownArrow))
+            }
+            if (key.Equals(ConsoleKey.DownArrow))
             {
                 option++;
                 if (option == _runnables.Length)
                 {
                     option = 0;
                 }
+                Beep();
             } else if (key.Equals(ConsoleKey.UpArrow))
             {
                 option--;
@@ -62,8 +64,19 @@ public class BrowserList
                 {
                     option = _runnables.Length - 1;
                 }
+
+                Beep();
             }
         } while(true);
+    }
+
+
+    private void Beep()
+    {
+        new Thread(() =>
+        {
+            Console.Beep(2000, 200);
+        }).Start();
     }
     
 }

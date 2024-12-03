@@ -1,8 +1,10 @@
+using DatabaseManager.Data.Entities.Shared;
+
 namespace DatabaseManager.Data.Entities;
 
-public class ClientEntity
+public class ClientEntity : BasePersonalEntity
 {
- 
-    public int Id { get; set; }
+    
+    public List<BorrowEntity> Borrows { get; set; } = new();
     
 }

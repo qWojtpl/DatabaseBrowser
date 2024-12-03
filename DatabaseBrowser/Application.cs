@@ -30,7 +30,7 @@ public class Application
 
         if (runnables.Count > 0)
         {
-            new BrowserList("Tables: \n", runnables.ToArray()).Display();
+            new BrowserList(true, "Tables: \n", runnables.ToArray()).Display();
         }
         else
         {

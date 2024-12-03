@@ -1,8 +1,10 @@
+using DatabaseManager.Data.Entities.Shared;
+
 namespace DatabaseManager.Data.Entities;
 
-public class AuthorEntity
+public class AuthorEntity : BasePersonalEntity
 {
     
-    public int Id { get; set; }
+    public List<BookEntity> Books { get; set; } = new();
     
 }
