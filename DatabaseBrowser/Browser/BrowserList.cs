@@ -44,11 +44,6 @@ public class BrowserList
                 Console.BackgroundColor = ConsoleColor.Black;
             }
             key = Console.ReadKey(true).Key;
-            if (key.Equals(ConsoleKey.Enter))
-            {
-                _runnables[option].Action.Invoke();
-                break;
-            }
             if (key.Equals(ConsoleKey.DownArrow))
             {
                 option++;
@@ -64,10 +59,11 @@ public class BrowserList
                 {
                     option = _runnables.Length - 1;
                 }
-
                 Beep();
             }
-        } while(true);
+        } while(!key.Equals(ConsoleKey.Enter));
+        _runnables[option].Action.Invoke();
+        Beep();
     }
 
 
