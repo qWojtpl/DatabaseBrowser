@@ -5,6 +5,6 @@ namespace DatabaseManager.Data.Entities;
 public class ClientEntity : BasePersonalEntity
 {
     
-    public List<BorrowEntity> Borrows { get; set; } = new();
+    public List<BorrowEntity?> Borrows { get; set; } = new();
     
 }

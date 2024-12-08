@@ -53,18 +53,30 @@ public class EntityHandler
         StringBuilder headerBuilder = new StringBuilder();
         foreach(var entity in entities)
         {
+            if (entity == null)
+            {
+                continue;
+            }
             StringBuilder valueBuilder = new StringBuilder();
             int total = entity.GetType().GetProperties().Length;
             int i = 0;
             foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(entity))
             {
+                string name = prop.Name;
+                object? value = prop.GetValue(entity);
                 if (prop.PropertyType != typeof(int) && prop.PropertyType != typeof(string))
                 {
-                    i++;
-                    continue;
+                    if (!prop.PropertyType.Name.EndsWith("Entity"))
+                    {
+                        i++;
+                        continue;   
+                    }
+                    value = (BaseEntity)prop.GetValue(entity);
                 }
-                string name = prop.Name;
-                object value = prop.GetValue(entity).ToString();
+                if (value == null)
+                {
+                    value = "NULL";
+                }
                 if (i != total - 1)
                 {
                     valueBuilder.Append($"{value, -15} | ");
@@ -90,8 +102,8 @@ public class EntityHandler
             {
                 headerBuilt = true;
                 runnables.Add(new BrowserRunnable(headerBuilder.ToString(), null));
+                runnables.Add(new BrowserRunnable("---------------------------------------------", null));
             }
-            runnables.Add(new BrowserRunnable("---------------------------------------------", null));
             runnables.Add(new BrowserRunnable(valueBuilder.ToString(), null));
 
         }
@@ -99,7 +111,7 @@ public class EntityHandler
 
     public void AddNewRecord()
     {
-        
+        new EntityAdder(_context, _entityType, this).CreateNewEntity();
     }
 
     public void GoToTableList()

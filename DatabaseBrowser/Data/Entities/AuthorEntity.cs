@@ -5,6 +5,6 @@ namespace DatabaseManager.Data.Entities;
 public class AuthorEntity : BasePersonalEntity
 {
     
-    public List<BookEntity> Books { get; set; } = new();
+    public List<BookEntity?> Books { get; set; } = new();
     
 }
