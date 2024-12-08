@@ -11,4 +11,15 @@ public class BookEntity : BaseEntity
     public int? Year { get; set; }
     public List<AuthorEntity?> Authors { get; set; } = new();
     
+    public BookEntity(){}
+    
+    public BookEntity(Dictionary<string, string> args)
+    {
+        Id = int.Parse(args["Id"]);
+        Title = args["Title"];
+        Description = args["Description"];
+        NumberOfPages = int.Parse(args["NumberOfPages"]);
+        Year = int.Parse(args["Year"]);
+    }
+    
 }

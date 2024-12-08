@@ -7,14 +7,13 @@ namespace DatabaseManager.Browser;
 public class EntityAdder
 {
     
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _context = Bootstrap.GetApplication().Context;
     private readonly Type _entityType;
     private readonly string _entityName;
     private readonly EntityHandler _entityHandler;
 
-    public EntityAdder(AppDbContext context, Type entityType, EntityHandler handler)
+    public EntityAdder(Type entityType, EntityHandler handler)
     {
-        _context = context;
         _entityType = entityType;
         _entityName = entityType.Name;
         _entityHandler = handler;

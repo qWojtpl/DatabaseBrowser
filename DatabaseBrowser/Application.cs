@@ -9,6 +9,7 @@ public class Application
 {
 
     private AppDbContext _context;
+    public AppDbContext Context { get => _context; }
 
     public void Start()
     {
@@ -25,7 +26,7 @@ public class Application
                                                                   BindingFlags.Instance | 
                                                                   BindingFlags.Public))
         {
-            EntityHandler handler = new EntityHandler(_context, property.PropertyType);
+            EntityHandler handler = new EntityHandler(property.PropertyType);
             runnables.Add(new BrowserRunnable(property.Name, handler.Handle));
         }
 
