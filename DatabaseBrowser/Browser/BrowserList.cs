@@ -21,10 +21,9 @@ public class BrowserList
         _counter = counter;
     }
 
-    public void Display()
+    public void Display(int option = 0)
     {
         ConsoleKey key;
-        int option = 0;
         do
         {
             Console.Clear();
@@ -38,10 +37,20 @@ public class BrowserList
                     Console.ForegroundColor = ConsoleColor.Black;
                     Console.BackgroundColor = ConsoleColor.White;
                 }
-                Console.WriteLine((_counter ? (i + 1) + ". " : " ") + runnable.Text);
+                Console.Write((_counter ? (i + 1) + ". " : " ") + runnable.Text);
+                bool last = true;
+                if (!runnable.Equals(_runnables.LastOrDefault()))
+                {
+                    last = false;
+                    Console.Write("\n");
+                }
                 i++;
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.BackgroundColor = ConsoleColor.Black;
+                if (last)
+                {
+                    Console.Write("\n");
+                }
             }
             key = Console.ReadKey(true).Key;
             if (key.Equals(ConsoleKey.DownArrow))
@@ -62,17 +71,23 @@ public class BrowserList
                 Beep();
             }
         } while(!key.Equals(ConsoleKey.Enter));
-        _runnables[option].Action.Invoke();
-        Beep();
+
+        Action? action = _runnables[option].Action;
+        if (action != null)
+        {
+            action.Invoke();
+            Beep();
+        }
+        else
+        {
+            Display(option);
+        }
     }
 
 
     private void Beep()
     {
-        new Thread(() =>
-        {
-            Console.Beep(2000, 200);
-        }).Start();
+        ConsoleBeeper.Beep();
     }
     
 }
