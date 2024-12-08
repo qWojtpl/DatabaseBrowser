@@ -64,14 +64,10 @@ public class EntityHandler
             {
                 string name = prop.Name;
                 object? value = prop.GetValue(entity);
-                if (prop.PropertyType != typeof(int) && prop.PropertyType != typeof(string))
+                if (prop.PropertyType.Name.StartsWith("List"))
                 {
-                    if (!prop.PropertyType.Name.EndsWith("Entity"))
-                    {
-                        i++;
-                        continue;   
-                    }
-                    value = (BaseEntity)prop.GetValue(entity);
+                    i++;
+                    continue;   
                 }
                 if (value == null)
                 {
@@ -102,7 +98,12 @@ public class EntityHandler
             {
                 headerBuilt = true;
                 runnables.Add(new BrowserRunnable(headerBuilder.ToString(), null));
-                runnables.Add(new BrowserRunnable("---------------------------------------------", null));
+                StringBuilder divider = new StringBuilder();
+                for (int j = 0; j < total; j++)
+                {
+                    divider.Append("---------------");
+                }
+                runnables.Add(new BrowserRunnable(divider.ToString(), null));
             }
             runnables.Add(new BrowserRunnable(valueBuilder.ToString(), null));
 
