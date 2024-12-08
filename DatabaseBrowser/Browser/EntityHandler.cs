@@ -22,6 +22,7 @@ public class EntityHandler
 
     public void Handle()
     {
+        _context.ChangeTracker.Clear();
         List<BrowserRunnable> runnables = new List<BrowserRunnable>();
         runnables.Add(new BrowserRunnable(" Go back", GoToTableList));
         runnables.Add(new BrowserRunnable(" New record", AddNewRecord));
@@ -144,17 +145,21 @@ public class EntityHandler
                 args["Id"] = property.GetValue(entity).ToString();
                 continue;
             }
-            if (property.GetType().Name.Contains("List"))
+            if (property.ToString().StartsWith("System.Collections.Generic.List"))
             {
                 continue;
             }
             Console.Write(property.Name + ": ");
             string? newValue = Console.ReadLine();
+            if (String.IsNullOrWhiteSpace(newValue))
+            {
+                newValue = property.GetValue(entity).ToString();
+            }
             args[property.Name] = newValue;
         }
         _context.Update(Activator.CreateInstance(typeof(T), args));
         _context.SaveChanges();
-        new Thread(Handle).Start();
+        Handle();
     }
 
     private void DeleteRecord<T>(T entity)
@@ -169,11 +174,11 @@ public class EntityHandler
             Application.MessageBox((IntPtr) 0, "Entity is protected due to relation!", "Error", 0);
         }
         ConsoleBeeper.Beep();
-        new Thread(Handle).Start();
+        Handle();
     }
 
     private void GoToTableList()
-    {
+    { 
         Bootstrap.GetApplication().DisplayEntities();
     }
 
