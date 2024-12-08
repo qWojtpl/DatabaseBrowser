@@ -1,4 +1,8 @@
+using System.ComponentModel;
+using System.Text;
 using DatabaseManager.Data;
+using DatabaseManager.Data.Entities;
+using DatabaseManager.Data.Entities.Shared;
 
 namespace DatabaseManager.Browser;
 
@@ -24,7 +28,16 @@ public class EntityHandler
         switch(_entityName)
         {
             case "AuthorEntity":
-                PrintAuthors(runnables);
+                PrintEntities(runnables, _context.Authors.ToList());
+                break;
+            case "BookEntity":
+                PrintEntities(runnables, _context.Books.ToList());
+                break;
+            case "BorrowEntity":
+                PrintEntities(runnables, _context.Borrows.ToList());
+                break;
+            case "ClientEntity":
+                PrintEntities(runnables, _context.Clients.ToList());
                 break;
         }
         if(runnables.Count == 0)
@@ -34,13 +47,53 @@ public class EntityHandler
         new BrowserList(_entityName + "\n", runnables.ToArray()).Display();
     }
 
-    public void PrintAuthors(List<BrowserRunnable> runnables)
+    public void PrintEntities<T>(List<BrowserRunnable> runnables, List<T> entities)
     {
-        foreach(var author in _context.Authors.ToList())
+        bool headerBuilt = false;
+        StringBuilder headerBuilder = new StringBuilder();
+        foreach(var entity in entities)
         {
-            runnables.Add(new BrowserRunnable(String.Format("{0,-15} | {1,-15} | {2}", "Id", "FirstName", "LastName"), null));
+            StringBuilder valueBuilder = new StringBuilder();
+            int total = entity.GetType().GetProperties().Length;
+            int i = 0;
+            foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(entity))
+            {
+                if (prop.PropertyType != typeof(int) && prop.PropertyType != typeof(string))
+                {
+                    i++;
+                    continue;
+                }
+                string name = prop.Name;
+                object value = prop.GetValue(entity).ToString();
+                if (i != total - 1)
+                {
+                    valueBuilder.Append($"{value, -15} | ");
+                }
+                else
+                {
+                    valueBuilder.Append($"{value}");
+                }
+                if (!headerBuilt)
+                {
+                    if (i != total - 1)
+                    {
+                        headerBuilder.Append($"{name, -15} | ");
+                    }
+                    else
+                    {
+                        headerBuilder.Append($"{name}");
+                    }
+                }
+                i++;
+            }
+            if (!headerBuilt)
+            {
+                headerBuilt = true;
+                runnables.Add(new BrowserRunnable(headerBuilder.ToString(), null));
+            }
             runnables.Add(new BrowserRunnable("---------------------------------------------", null));
-            runnables.Add(new BrowserRunnable(String.Format("{0,-15} | {1,-15} | {2}", author.Id, author.FirstName, author.LastName), () => { AddNewRecord(); }));
+            runnables.Add(new BrowserRunnable(valueBuilder.ToString(), null));
+
         }
     }
 
