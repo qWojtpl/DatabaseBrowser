@@ -3,6 +3,7 @@ using System.Text;
 using DatabaseManager.Data;
 using DatabaseManager.Data.Entities;
 using DatabaseManager.Data.Entities.Shared;
+using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseManager.Browser;
 
@@ -23,8 +24,8 @@ public class EntityHandler
     public void Handle()
     {
         List<BrowserRunnable> runnables = new List<BrowserRunnable>();
-        runnables.Add(new BrowserRunnable("   Go back", () => { Bootstrap.GetApplication().DisplayEntities(); }));
-        runnables.Add(new BrowserRunnable("   New record", () => { AddNewRecord(); }));
+        runnables.Add(new BrowserRunnable("  Go back", GoToTableList));
+        runnables.Add(new BrowserRunnable("  New record", AddNewRecord));
         switch(_entityName)
         {
             case "AuthorEntity":
@@ -34,13 +35,16 @@ public class EntityHandler
                 PrintEntities(runnables, _context.Books.ToList());
                 break;
             case "BorrowEntity":
-                PrintEntities(runnables, _context.Borrows.ToList());
+                PrintEntities(runnables, _context.Borrows
+                    .Include(n => n.Book)
+                    .Include(n => n.Client)
+                    .ToList());
                 break;
             case "ClientEntity":
                 PrintEntities(runnables, _context.Clients.ToList());
                 break;
         }
-        if(runnables.Count == 0)
+        if(runnables.Count == 2)
         {
             runnables.Add(new BrowserRunnable("No records found...", null));
         }
@@ -105,17 +109,31 @@ public class EntityHandler
                 }
                 runnables.Add(new BrowserRunnable(divider.ToString(), null));
             }
-            runnables.Add(new BrowserRunnable(valueBuilder.ToString(), null));
-
+            runnables.Add(new BrowserRunnable(valueBuilder.ToString(), null, () => { DeleteRecord<T>(entity); }));
         }
     }
 
-    public void AddNewRecord()
+    private void AddNewRecord()
     {
         new EntityAdder(_context, _entityType, this).CreateNewEntity();
     }
 
-    public void GoToTableList()
+    private void DeleteRecord<T>(T entity)
+    {
+        try
+        {
+            _context.Remove(entity);
+            _context.SaveChanges();
+        }
+        catch (Exception)
+        {
+            Application.MessageBox((IntPtr) 0, "Entity is protected due to relation!", "Error", 0);
+        }
+        ConsoleBeeper.Beep();
+        Handle();
+    }
+
+    private void GoToTableList()
     {
         Bootstrap.GetApplication().DisplayEntities();
     }

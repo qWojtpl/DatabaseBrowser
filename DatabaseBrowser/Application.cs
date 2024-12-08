@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.InteropServices;
 using DatabaseManager.Data;
 using DatabaseManager.Browser;
 
@@ -38,5 +39,8 @@ public class Application
         }
         
     }
+    
+    [DllImport("User32.dll", CharSet = CharSet.Unicode)]
+    public static extern int MessageBox(IntPtr h, string m, string c, int type);
     
 }

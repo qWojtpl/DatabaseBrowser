@@ -69,14 +69,22 @@ public class BrowserList
                     option = _runnables.Length - 1;
                 }
                 Beep();
+            } else if (key.Equals(ConsoleKey.Delete))
+            {
+                Action? a = _runnables[option].DeleteAction;
+                if (a != null)
+                {
+                    a.Invoke();
+                }
+                Beep();
             }
         } while(!key.Equals(ConsoleKey.Enter));
-
+        
         Action? action = _runnables[option].Action;
         if (action != null)
         {
-            action.Invoke();
             Beep();
+            action.Invoke();
         }
         else
         {
